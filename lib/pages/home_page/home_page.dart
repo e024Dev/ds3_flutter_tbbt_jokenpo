@@ -1,18 +1,20 @@
-import 'package:ds3_tbbt_flutter_jokenpo/pages/home_page/service/service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import 'model/computador.dart';
+import 'model/jogada.dart';
+import 'model/lagarto.dart';
+import 'model/papel.dart';
+import 'model/pedra.dart';
+import 'model/spock.dart';
+import 'model/states.dart';
+import 'model/tesoura.dart';
 import 'widgets/home_page_widgets.dart';
 
 class MyHomePage extends StatefulWidget {
   final String title;
-  late ButtonWidget buttonPapel,
-      buttonTesoura,
-      buttonPedra,
-      buttonLagarto,
-      buttonSpock;
 
-  MyHomePage({
+  const MyHomePage({
     Key? key,
     required this.title,
   }) : super(key: key);
@@ -22,25 +24,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  IconData iconUserPlay = FontAwesomeIcons.question,
+      iconComputerPlay = FontAwesomeIcons.question,
+      iconStatus = FontAwesomeIcons.question;
+
+  String statusJogo = 'Sua joagada aparecerá aqui!';
+  bool finalidado = false;
+
+  var propriedades = PropriedadesPagina(
+      iconeJogador: FontAwesomeIcons.question,
+      iconeJogadaCumpotador: FontAwesomeIcons.question,
+      iconeStatusJogada: FontAwesomeIcons.question,
+      statusJogo: 'Sua joagada aparecerá aqui!',
+      finalidado: false);
+
   @override
   void initState() {
     super.initState();
-
-    widget.buttonPedra = ButtonWidget(
-        texto: 'Pedra', tamanho: 36, icone: FontAwesomeIcons.handFist, jogar: (){
-          
-        });
-
-    // widget.buttonPapel = const ButtonWidget(
-    //     texto: 'Papel', tamanho: 36, icone: FontAwesomeIcons.solidHand);
-
-    // widget.buttonTesoura = const ButtonWidget(
-    //     texto: 'Tesoura', tamanho: 36, icone: FontAwesomeIcons.solidHandPeace);
-    // widget.buttonLagarto = const ButtonWidget(
-    //     texto: 'Lagarto', tamanho: 36, icone: FontAwesomeIcons.solidHandLizard);
-
-    // widget.buttonSpock = const ButtonWidget(
-    //     texto: 'Spock', tamanho: 36, icone: FontAwesomeIcons.solidHandSpock);
   }
 
   @override
@@ -51,68 +51,128 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              reiniciar();
+            },
             icon: const Icon(Icons.restart_alt),
           )
         ],
       ),
-      body: SizedBox(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: const [
-                      SizedBox(width: double.infinity),
-                      CardWidget(
-                          tamanho: 75,
-                          icone: FontAwesomeIcons.solidHandLizard,
-                          texto: 'Computador'),
-                      CardWidget(
-                          tamanho: 150,
-                          icone: FontAwesomeIcons.solidHandSpock,
-                          texto: 'Spock'),
-                    ],
-                  ),
-                  const Positioned(
-                    top: 16,
-                    right: 16,
-                    child: Icon(
-                      FontAwesomeIcons.faceLaughBeam,
-                      size: 48,
-                      color: Colors.white24,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Wrap(
-              alignment: WrapAlignment.spaceAround,
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                widget.buttonPedra,
-                widget.buttonPapel,
-                widget.buttonTesoura,
-                widget.buttonLagarto,
-                widget.buttonSpock,
+                const SizedBox(width: double.infinity),
+                Icon(
+                  iconStatus,
+                  size: 48,
+                  color: Colors.lightGreen,
+                ),
+                CardWidget(
+                  tamanho: 75,
+                  icone: iconComputerPlay,
+                  texto: 'Computador',
+                ),
+                CardWidget(
+                  tamanho: 150,
+                  icone: iconUserPlay,
+                  texto: statusJogo,
+                ),
               ],
             ),
-          ],
-        ),
+          ),
+          Wrap(
+            alignment: WrapAlignment.spaceAround,
+            children: [
+              ButtonWidget(
+                texto: 'Pedra',
+                tamanho: 36,
+                icone: FontAwesomeIcons.handFist,
+                jogar: () {
+                  jogar(Pedra());
+                },
+              ),
+              ButtonWidget(
+                texto: 'Papel',
+                tamanho: 36,
+                icone: FontAwesomeIcons.solidHand,
+                jogar: () {
+                  jogar(Papel());
+                },
+              ),
+              ButtonWidget(
+                texto: 'Tesoura',
+                tamanho: 36,
+                icone: FontAwesomeIcons.solidHandPeace,
+                jogar: () {
+                  jogar(Tesoura());
+                },
+              ),
+              ButtonWidget(
+                texto: 'Lagarto',
+                tamanho: 36,
+                icone: FontAwesomeIcons.solidHandLizard,
+                jogar: () {
+                  jogar(Lagarto());
+                },
+              ),
+              ButtonWidget(
+                texto: 'Spock',
+                tamanho: 36,
+                icone: FontAwesomeIcons.solidHandSpock,
+                jogar: () {
+                  jogar(Spock());
+                },
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
-  setResultIcon(String resultado) {
-    IconData icon;
-    if (resultado == 'venceu') {
-      icon = Icons.face;
-    } else if (resultado == 'empatou') {
-      icon = Icons.adb;
+  jogar(Jogada jogada) {
+    var jogadaComputador = Computador.jogar();
+    var resultadoJogo = jogada.executar(jogadaComputador);
+
+    print(resultadoJogo);
+
+    Map<String, IconData> mapIcons = {
+      'pedra': FontAwesomeIcons.handFist,
+      'papel': FontAwesomeIcons.solidHand,
+      'tesoura': FontAwesomeIcons.solidHandPeace,
+      'lagarto': FontAwesomeIcons.solidHandLizard,
+      'spock': FontAwesomeIcons.solidHandSpock
+    };
+
+    setState(() {
+      statusJogo = resultadoJogo['mensagem'] ?? 'Você';
+      iconComputerPlay =
+          mapIcons[jogadaComputador.name] ?? FontAwesomeIcons.question;
+      iconUserPlay = mapIcons[jogada.getTipo()] ?? FontAwesomeIcons.question;
+      iconStatus = getStatusIcon(resultadoJogo['resultado'] ?? 'empatou');
+    });
+  }
+
+  getStatusIcon(String resultado) {
+    if (resultado == Resultado.venceu.name) {
+      return FontAwesomeIcons.solidFaceGrinStars;
+    } else if (resultado == Resultado.perdeu.name) {
+      return FontAwesomeIcons.solidFaceSadCry;
     } else {
-      icon = Icons.add;
+      return FontAwesomeIcons.solidFaceMeh;
     }
+  }
+
+  reiniciar() {
+    setState(() {
+      statusJogo = 'Sua jogada aparecerá aqui!';
+      iconComputerPlay = FontAwesomeIcons.question;
+      iconUserPlay = FontAwesomeIcons.question;
+      iconStatus = FontAwesomeIcons.question;
+    });
   }
 }

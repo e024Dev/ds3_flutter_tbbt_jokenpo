@@ -1,10 +1,12 @@
 abstract class Jogada {
-  String resultado = "";
-  String mensagem = "";
+  String mensagem = '';
+  Resultado resultado = Resultado.empatou;
 
-  Map<String, String> executar(JogadaComputador computador);
+  String getTipo();
+
+  Map<String, String> executar(TipoJogada computador);
 }
 
 enum Resultado { empatou, venceu, perdeu }
 
-enum JogadaComputador { papel, tesoura, pedra, lagarto, spock }
+enum TipoJogada { papel, tesoura, pedra, lagarto, spock, nenhum }

@@ -1,16 +1,12 @@
-import 'package:ds3_tbbt_flutter_jokenpo/pages/home_page/model/jogada.dart';
 import 'package:flutter/material.dart';
 
 class CardWidget extends StatelessWidget {
   final double tamanho;
   final IconData icone;
-  final String texto;
+  final String? texto;
 
   const CardWidget(
-      {Key? key,
-      required this.tamanho,
-      required this.icone,
-      required this.texto})
+      {Key? key, required this.tamanho, required this.icone, this.texto})
       : super(key: key);
 
   @override
@@ -31,7 +27,7 @@ class CardWidget extends StatelessWidget {
           ),
         ),
         Text(
-          texto,
+          texto ?? '',
           style: const TextStyle(fontSize: 24, color: Colors.white30),
         ),
       ],
@@ -43,11 +39,9 @@ class ButtonWidget extends StatelessWidget {
   final double tamanho;
   final IconData icone;
   final String texto;
-  Jogada? jogada;
+  final VoidCallback? jogar;
 
-  Function? jogar;
-
-  ButtonWidget(
+  const ButtonWidget(
       {Key? key,
       required this.tamanho,
       required this.icone,
@@ -60,8 +54,7 @@ class ButtonWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8),
       child: TextButton(
-        onPressed: (){
-        },
+        onPressed: jogar,
         child: SizedBox(
           width: 75,
           height: 75,

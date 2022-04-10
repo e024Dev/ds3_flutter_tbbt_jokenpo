@@ -1,28 +1,28 @@
 import 'jogada.dart';
 
-class Papel extends Jogada {
+class Pedra extends Jogada {
   @override
   Map<String, String> executar(TipoJogada? computador) {
     switch (computador) {
-      case TipoJogada.pedra:
+      case TipoJogada.lagarto:
         resultado = Resultado.venceu;
-        mensagem = 'Papel cobre pedra';
-        break;
-      case TipoJogada.spock:
-        resultado = Resultado.venceu;
-        mensagem = 'Papel refuta Spock!';
+        mensagem = 'Pedra esmaga lagarto!';
         break;
       case TipoJogada.tesoura:
-        resultado = Resultado.perdeu;
-        mensagem = 'Tesoura corta papel!';
+        resultado = Resultado.venceu;
+        mensagem = 'Pedra amassa tesoura!';
         break;
-      case TipoJogada.lagarto:
+      case TipoJogada.spock:
         resultado = Resultado.perdeu;
-        mensagem = 'Lagarto come papel!';
+        mensagem = 'Spock vaporiza pedra';
+        break;
+      case TipoJogada.papel:
+        resultado = Resultado.perdeu;
+        mensagem = 'Papel cobre pedra!';
         break;
       default:
         resultado = Resultado.empatou;
-        mensagem = 'Papel empata com papel!';
+        mensagem = 'Empatou!';
     }
 
     return {'resultado': resultado.name, 'mensagem': mensagem};
@@ -30,6 +30,6 @@ class Papel extends Jogada {
 
   @override
   String getTipo() {
-    return TipoJogada.papel.name;
+    return TipoJogada.pedra.name;
   }
 }
